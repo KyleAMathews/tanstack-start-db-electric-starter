@@ -18,7 +18,9 @@ import IdParamsSchema from "stoker/openapi/schemas/id-params"
 const app = new OpenAPIHono()
 
 // Generate a transaction ID
-async function generateTxId(tx): Promise<string> {
+async function generateTxId(
+  tx: Parameters<Parameters<typeof db.transaction>[0]>[0]
+): Promise<string> {
   const txidResult = await tx.execute(sql`SELECT txid_current() as txid`)
   return String(txidResult.rows[0].txid)
 }
