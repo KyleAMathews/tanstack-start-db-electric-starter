@@ -1,4 +1,4 @@
-Welcome to your new TanStack Start/DB + Electric app!
+Welcome to your new TanStack [Start](https://tanstack.com/start/latest)/[DB](https://tanstack.com/db/latest) + [Electric](https://electric-sql.com/) app!
 
 # Getting Started
 
@@ -93,7 +93,7 @@ More information on layouts can be found in the [Layouts documentation](https://
 
 ## Data Fetching
 
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
+There are multiple ways to fetch data in your application. You can use TanStack DB to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
 
 For example:
 
@@ -124,163 +124,110 @@ const peopleRoute = createRoute({
 
 Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
 
-### React-Query
+### TanStack DB & Electric
 
-React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
+TanStack DB gives you robust support for real-time sync, live queries and local writes. With no stale data, super fast re-rendering and sub-millisecond cross-collection queries — even for large complex apps.
 
-First add your dependencies:
+[Electric](https://electric-sql.com/) is a Postgres sync engine. It solves the hard problems of sync for you, including [partial replication](https://electric-sql.com/docs/guides/shapes), [fan-out](https://electric-sql.com/docs/api/http#caching), and [data delivery](https://electric-sql.com/docs/api/http).
 
-```bash
-npm install @tanstack/react-query @tanstack/react-query-devtools
-```
+Built on a TypeScript implementation of differential dataflow, TanStack DB provides:
 
-Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
+- 🔥 **Blazing fast query engine** - sub-millisecond live queries, even for complex queries with joins and aggregates
+- 🎯 **Fine-grained reactivity** - minimize component re-rendering
+- 💪 **Robust transaction primitives** - easy optimistic mutations with sync and lifecycle support
+- 🌟 **Normalized data** - keep your backend simple
 
-```tsx
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+#### Core Concepts
 
-// ...
+**Collections** - Typed sets of objects that can mirror a backend table or be populated with filtered views like `pendingTodos` or `decemberNewTodos`. Collections are just JavaScript data that you can load on demand.
 
-const queryClient = new QueryClient()
+**Live Queries** - Run reactively against and across collections with support for joins, filters and aggregates. Powered by differential dataflow, query results update incrementally without re-running the whole query.
 
-// ...
+**Transactional Optimistic Mutations** - Batch and stage local changes across collections with immediate application of local optimistic updates. Sync transactions to the backend with automatic rollbacks and management of optimistic state.
 
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement)
+#### Usage with ElectricSQL
 
-  root.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  )
-}
-```
-
-You can also add TanStack Query Devtools to the root route (optional).
+This starter uses ElectricSQL for a fully local-first experience with real-time sync:
 
 ```tsx
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { createCollection } from "@tanstack/react-db"
+import { electricCollectionOptions } from "@tanstack/db-collections"
 
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools />
-    </>
-  ),
-})
-```
-
-Now you can use `useQuery` to fetch your data.
-
-```tsx
-import { useQuery } from "@tanstack/react-query"
-
-import "./App.css"
-
-function App() {
-  const { data } = useQuery({
-    queryKey: ["people"],
-    queryFn: () =>
-      fetch("https://swapi.dev/api/people")
-        .then((res) => res.json())
-        .then((data) => data.results as { name: string }[]),
-    initialData: [],
+export const todoCollection = createCollection(
+  electricCollectionOptions<Todo>({
+    id: "todos",
+    schema: todoSchema,
+    // Electric syncs data using "shapes" - filtered views on database tables
+    shapeOptions: {
+      url: "https://api.electric-sql.cloud/v1/shape",
+      params: {
+        table: "todos",
+      },
+    },
+    getKey: (item) => item.id,
+    onInsert: ({ transaction }) => {
+      const response = await api.todos.create(transaction.mutations[0].modified)
+      return { txid: response.txid }
+    },
+    // You can also implement onUpdate, onDelete as needed
   })
-
-  return (
-    <div>
-      <ul>
-        {data.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-export default App
+)
 ```
 
-You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
-
-## State Management
-
-Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
-
-First you need to add TanStack Store as a dependency:
-
-```bash
-npm install @tanstack/store
-```
-
-Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
+Apply mutations with local optimistic state that automatically syncs:
 
 ```tsx
-import { useStore } from "@tanstack/react-store"
-import { Store } from "@tanstack/store"
-import "./App.css"
-
-const countStore = new Store(0)
-
-function App() {
-  const count = useStore(countStore)
+const AddTodo = () => {
   return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-    </div>
+    <Button
+      onClick={() =>
+        todoCollection.insert({
+          id: crypto.randomUUID(),
+          text: "🔥 Make app faster",
+          completed: false,
+        })
+      }
+    />
   )
 }
-
-export default App
 ```
 
-One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
+#### Live Queries with Cross-Collection Joins
 
-Let's check this out by doubling the count using derived state.
+Use live queries to read data reactively across collections:
 
 ```tsx
-import { useStore } from "@tanstack/react-store"
-import { Store, Derived } from "@tanstack/store"
-import "./App.css"
+import { useLiveQuery } from "@tanstack/react-db"
 
-const countStore = new Store(0)
-
-const doubledStore = new Derived({
-  fn: () => countStore.state * 2,
-  deps: [countStore],
-})
-doubledStore.mount()
-
-function App() {
-  const count = useStore(countStore)
-  const doubledCount = useStore(doubledStore)
+const Todos = () => {
+  // Read data using live queries with cross-collection joins
+  const { data: todos } = useLiveQuery((query) =>
+    query
+      .from({ t: todoCollection })
+      .join({
+        type: "inner",
+        from: { l: listCollection },
+        on: [`@l.id`, `=`, `@t.list_id`],
+      })
+      .where("@l.active", "=", true)
+      .select("@t.id", "@t.text", "@t.status", "@l.name")
+  )
 
   return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-      <div>Doubled - {doubledCount}</div>
-    </div>
+    <ul>
+      {todos.map((todo) => (
+        <li key={todo.id}>
+          {todo.text} - {todo.name}
+        </li>
+      ))}
+    </ul>
   )
 }
-
-export default App
 ```
 
-We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
+This pattern provides blazing fast, cross-collection live queries and local optimistic mutations with automatically managed optimistic state, all synced in real-time with ElectricSQL.
 
-Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
-
-You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
+You can learn more about TanStack DB in the [TanStack DB documentation](https://tanstack.com/db/latest/docs/overview).
 
 # Learn More
 
