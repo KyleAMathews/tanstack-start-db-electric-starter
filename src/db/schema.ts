@@ -1,8 +1,30 @@
-import { integer, pgTable, varchar } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  integer,
+  pgTable,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core"
+import { createSchemaFactory } from "drizzle-zod"
+import { z } from "@hono/zod-openapi"
 
-export const usersTable = pgTable(`users`, {
+const { createInsertSchema, createSelectSchema, createUpdateSchema } =
+  createSchemaFactory({ zodInstance: z })
+
+export const todosTable = pgTable(`todos`, {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull(),
-  age: integer().notNull(),
-  email: varchar({ length: 255 }).notNull().unique(),
+  text: varchar({ length: 500 }).notNull(),
+  completed: boolean().notNull().default(false),
+  created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
 })
+
+export const selectTodoSchema = createSelectSchema(todosTable)
+export const createTodoSchema = createInsertSchema(todosTable)
+  .omit({
+    created_at: true,
+  })
+  .openapi(`CreateTodo`)
+export const updateTodoSchema = createUpdateSchema(todosTable)
+
+export type Todo = z.infer<typeof selectTodoSchema>
+export type UpdateTodo = z.infer<typeof updateTodoSchema>

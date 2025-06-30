@@ -8,45 +8,87 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root"
-import { Route as IndexRouteImport } from "./routes/index"
+import { createServerRootRoute } from '@tanstack/react-start/server'
+
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { ServerRoute as ApiTodosSplatServerRouteImport } from './routes/api/todos/$'
+
+const rootServerRouteImport = createServerRootRoute()
 
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTodosSplatServerRoute = ApiTodosSplatServerRouteImport.update({
+  id: '/api/todos/$',
+  path: '/api/todos/$',
+  getParentRoute: () => rootServerRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute
+  '/': typeof IndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute
+  '/': typeof IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  "/": typeof IndexRoute
+  '/': typeof IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/"
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to: "/"
-  id: "__root__" | "/"
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
 }
+export interface FileServerRoutesByFullPath {
+  '/api/todos/$': typeof ApiTodosSplatServerRoute
+}
+export interface FileServerRoutesByTo {
+  '/api/todos/$': typeof ApiTodosSplatServerRoute
+}
+export interface FileServerRoutesById {
+  __root__: typeof rootServerRouteImport
+  '/api/todos/$': typeof ApiTodosSplatServerRoute
+}
+export interface FileServerRouteTypes {
+  fileServerRoutesByFullPath: FileServerRoutesByFullPath
+  fullPaths: '/api/todos/$'
+  fileServerRoutesByTo: FileServerRoutesByTo
+  to: '/api/todos/$'
+  id: '__root__' | '/api/todos/$'
+  fileServerRoutesById: FileServerRoutesById
+}
+export interface RootServerRouteChildren {
+  ApiTodosSplatServerRoute: typeof ApiTodosSplatServerRoute
+}
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/"
-      path: "/"
-      fullPath: "/"
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+  }
+}
+declare module '@tanstack/react-start/server' {
+  interface ServerFileRoutesByPath {
+    '/api/todos/$': {
+      id: '/api/todos/$'
+      path: '/api/todos/$'
+      fullPath: '/api/todos/$'
+      preLoaderRoute: typeof ApiTodosSplatServerRouteImport
+      parentRoute: typeof rootServerRouteImport
     }
   }
 }
@@ -57,3 +99,9 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+const rootServerRouteChildren: RootServerRouteChildren = {
+  ApiTodosSplatServerRoute: ApiTodosSplatServerRoute,
+}
+export const serverRouteTree = rootServerRouteImport
+  ._addFileChildren(rootServerRouteChildren)
+  ._addFileTypes<FileServerRouteTypes>()
