@@ -1,5 +1,5 @@
 version: "3.3"
-name: "electric_quickstart"
+name: "tanstack-start-db-electric-starter"
 
 services:
   postgres:
