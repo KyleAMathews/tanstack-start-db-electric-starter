@@ -4,6 +4,8 @@ import { createCollection } from "@tanstack/react-db"
 import { electricCollectionOptions } from "@tanstack/db-collections"
 import { useState } from "react"
 import { selectTodoSchema, type Todo } from "../db/schema"
+import { getClient } from "../api-client"
+const client = getClient()
 
 const todoCollection = createCollection(
   electricCollectionOptions({
@@ -24,44 +26,53 @@ const todoCollection = createCollection(
     getKey: (item) => item.id,
     onInsert: async ({ transaction }) => {
       const { modified: newTodo } = transaction.mutations[0]
-      const response = await fetch("/api/todos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const result = await client.api.todos.$post({
+        json: {
           text: newTodo.text,
           completed: newTodo.completed,
-        }),
+        },
       })
-      if (!response.ok) {
-        throw new Error(`Failed to create todo: ${response.statusText}`)
-      }
 
-      return response.json()
+      if (result.ok) {
+        const data = await result.json()
+        return { txid: data.txid }
+      } else {
+        const errorData = await result.json()
+        throw new Error(JSON.stringify(errorData))
+      }
     },
     onUpdate: async ({ transaction }) => {
       const { modified: updatedTodo } = transaction.mutations[0]
-      const response = await fetch(`/api/todos/${updatedTodo.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const result = await client.api.todos[":id"].$put({
+        param: {
+          id: updatedTodo.id,
+        },
+        json: {
           text: updatedTodo.text,
           completed: updatedTodo.completed,
-        }),
+        },
       })
-      if (!response.ok) {
-        throw new Error(`Failed to update todo: ${response.statusText}`)
+      if (result.ok) {
+        const data = await result.json()
+        return { txid: data.txid }
+      } else {
+        const errorData = await result.json()
+        throw new Error(JSON.stringify(errorData))
       }
-      return response.json()
     },
     onDelete: async ({ transaction }) => {
       const { original: deletedTodo } = transaction.mutations[0]
-      const response = await fetch(`/api/todos/${deletedTodo.id}`, {
-        method: "DELETE",
+      const result = await client.api.todos[":id"].$delete({
+        param: { id: deletedTodo.id },
       })
-      if (!response.ok) {
-        throw new Error(`Failed to delete todo: ${response.statusText}`)
+
+      if (result.ok) {
+        const data = await result.json()
+        return { txid: data.txid }
+      } else {
+        const errorData = await result.json()
+        throw new Error(JSON.stringify(errorData))
       }
-      return await response.json()
     },
   })
 )
