@@ -17,14 +17,14 @@ importers:
         specifier: ^4.0.6
         version: 4.1.11(vite@6.3.5(@types/node@24.0.7)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
       "@tanstack/db":
-        specifier: https://pkg.pr.new/@tanstack/db@029c3ad
-        version: https://pkg.pr.new/@tanstack/db@029c3ad(typescript@5.8.3)
+        specifier: https://pkg.pr.new/@tanstack/db@24bdccd
+        version: https://pkg.pr.new/@tanstack/db@24bdccd(typescript@5.8.3)
       "@tanstack/db-collections":
-        specifier: https://pkg.pr.new/@tanstack/db-collections@029c3ad
-        version: https://pkg.pr.new/@tanstack/db-collections@029c3ad(@electric-sql/client@1.0.5)(typescript@5.8.3)
+        specifier: https://pkg.pr.new/@tanstack/db-collections@24bdccd
+        version: https://pkg.pr.new/@tanstack/db-collections@24bdccd(@electric-sql/client@1.0.5)(typescript@5.8.3)
       "@tanstack/react-db":
-        specifier: https://pkg.pr.new/@tanstack/react-db@029c3ad
-        version: https://pkg.pr.new/@tanstack/react-db@029c3ad(react@19.1.0)(typescript@5.8.3)
+        specifier: https://pkg.pr.new/@tanstack/react-db@24bdccd
+        version: https://pkg.pr.new/@tanstack/react-db@24bdccd(react@19.1.0)(typescript@5.8.3)
       "@tanstack/react-router":
         specifier: ^1.121.2
         version: 1.123.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1832,21 +1832,21 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
 
-  "@tanstack/db-collections@https://pkg.pr.new/@tanstack/db-collections@029c3ad":
-    resolution: { tarball: https://pkg.pr.new/@tanstack/db-collections@029c3ad }
+  "@tanstack/db-collections@https://pkg.pr.new/@tanstack/db-collections@24bdccd":
+    resolution: { tarball: https://pkg.pr.new/@tanstack/db-collections@24bdccd }
     version: 0.0.17
     peerDependencies:
       "@electric-sql/client": ">=1.0.0"
       typescript: ">=4.7"
 
-  "@tanstack/db@https://pkg.pr.new/@tanstack/db@029c3ad":
-    resolution: { tarball: https://pkg.pr.new/@tanstack/db@029c3ad }
+  "@tanstack/db@https://pkg.pr.new/@tanstack/db@24bdccd":
+    resolution: { tarball: https://pkg.pr.new/@tanstack/db@24bdccd }
     version: 0.0.14
     peerDependencies:
       typescript: ">=4.7"
 
-  "@tanstack/db@https://pkg.pr.new/TanStack/db/@tanstack/db@029c3ad":
-    resolution: { tarball: https://pkg.pr.new/TanStack/db/@tanstack/db@029c3ad }
+  "@tanstack/db@https://pkg.pr.new/TanStack/db/@tanstack/db@24bdccd":
+    resolution: { tarball: https://pkg.pr.new/TanStack/db/@tanstack/db@24bdccd }
     version: 0.0.14
     peerDependencies:
       typescript: ">=4.7"
@@ -1873,8 +1873,8 @@ packages:
         integrity: sha512-ZJOgCy/z2qpZXWaj/oxvodDx07XcQa9BF92c0oINjHkoqUPsmm3uG08HpTaviviZ/N9eP1f9CM7mKSEkIo7O1Q==,
       }
 
-  "@tanstack/react-db@https://pkg.pr.new/@tanstack/react-db@029c3ad":
-    resolution: { tarball: https://pkg.pr.new/@tanstack/react-db@029c3ad }
+  "@tanstack/react-db@https://pkg.pr.new/@tanstack/react-db@24bdccd":
+    resolution: { tarball: https://pkg.pr.new/@tanstack/react-db@24bdccd }
     version: 0.0.14
     peerDependencies:
       react: ">=16.8.0"
@@ -8725,22 +8725,22 @@ snapshots:
       tailwindcss: 4.1.11
       vite: 6.3.5(@types/node@24.0.7)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0)
 
-  "@tanstack/db-collections@https://pkg.pr.new/@tanstack/db-collections@029c3ad(@electric-sql/client@1.0.5)(typescript@5.8.3)":
+  "@tanstack/db-collections@https://pkg.pr.new/@tanstack/db-collections@24bdccd(@electric-sql/client@1.0.5)(typescript@5.8.3)":
     dependencies:
       "@electric-sql/client": 1.0.5
       "@standard-schema/spec": 1.0.0
-      "@tanstack/db": https://pkg.pr.new/TanStack/db/@tanstack/db@029c3ad(typescript@5.8.3)
+      "@tanstack/db": https://pkg.pr.new/TanStack/db/@tanstack/db@24bdccd(typescript@5.8.3)
       "@tanstack/query-core": 5.81.5
       "@tanstack/store": 0.7.1
       typescript: 5.8.3
 
-  "@tanstack/db@https://pkg.pr.new/@tanstack/db@029c3ad(typescript@5.8.3)":
+  "@tanstack/db@https://pkg.pr.new/@tanstack/db@24bdccd(typescript@5.8.3)":
     dependencies:
       "@electric-sql/d2mini": 0.1.4
       "@standard-schema/spec": 1.0.0
       typescript: 5.8.3
 
-  "@tanstack/db@https://pkg.pr.new/TanStack/db/@tanstack/db@029c3ad(typescript@5.8.3)":
+  "@tanstack/db@https://pkg.pr.new/TanStack/db/@tanstack/db@24bdccd(typescript@5.8.3)":
     dependencies:
       "@electric-sql/d2mini": 0.1.4
       "@standard-schema/spec": 1.0.0
@@ -8763,9 +8763,9 @@ snapshots:
 
   "@tanstack/query-core@5.81.5": {}
 
-  "@tanstack/react-db@https://pkg.pr.new/@tanstack/react-db@029c3ad(react@19.1.0)(typescript@5.8.3)":
+  "@tanstack/react-db@https://pkg.pr.new/@tanstack/react-db@24bdccd(react@19.1.0)(typescript@5.8.3)":
     dependencies:
-      "@tanstack/db": https://pkg.pr.new/TanStack/db/@tanstack/db@029c3ad(typescript@5.8.3)
+      "@tanstack/db": https://pkg.pr.new/TanStack/db/@tanstack/db@24bdccd(typescript@5.8.3)
       react: 19.1.0
       use-sync-external-store: 1.5.0(react@19.1.0)
     transitivePeerDependencies:
