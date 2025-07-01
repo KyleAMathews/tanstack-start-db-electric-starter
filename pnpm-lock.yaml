@@ -47,8 +47,8 @@ importers:
         specifier: ^0.44.2
         version: 0.44.2(@types/pg@8.15.4)(pg@8.16.3)
       drizzle-zod:
-        specifier: ^0.6.1
-        version: 0.6.1(drizzle-orm@0.44.2(@types/pg@8.15.4)(pg@8.16.3))(zod@3.25.67)
+        specifier: ^0.7.1
+        version: 0.7.1(drizzle-orm@0.44.2(@types/pg@8.15.4)(pg@8.16.3))(zod@3.25.67)
       hono:
         specifier: ^4.8.3
         version: 4.8.3
@@ -3566,10 +3566,10 @@ packages:
       sqlite3:
         optional: true
 
-  drizzle-zod@0.6.1:
+  drizzle-zod@0.7.1:
     resolution:
       {
-        integrity: sha512-huEbUgnsuR8tupnmLiyB2F1I2H9dswI3GfM36IbIqx9i0YUeYjRsDpJVyFVeziUvI1ogT9JHRL2Q03cC4QmvxA==,
+        integrity: sha512-nZzALOdz44/AL2U005UlmMqaQ1qe5JfanvLujiTHiiT8+vZJTBFhj3pY4Vk+L6UWyKFfNmLhk602Hn4kCTynKQ==,
       }
     peerDependencies:
       drizzle-orm: ">=0.36.0"
@@ -10022,7 +10022,7 @@ snapshots:
       "@types/pg": 8.15.4
       pg: 8.16.3
 
-  drizzle-zod@0.6.1(drizzle-orm@0.44.2(@types/pg@8.15.4)(pg@8.16.3))(zod@3.25.67):
+  drizzle-zod@0.7.1(drizzle-orm@0.44.2(@types/pg@8.15.4)(pg@8.16.3))(zod@3.25.67):
     dependencies:
       drizzle-orm: 0.44.2(@types/pg@8.15.4)(pg@8.16.3)
       zod: 3.25.67

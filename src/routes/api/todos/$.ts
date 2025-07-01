@@ -92,7 +92,7 @@ app.openapi(updateTodoRoute, async (c) => {
 
   const result = await db.transaction(async (tx) => {
     const txid = await generateTxId(tx)
-    const [updatedTodo] = await db
+    const [updatedTodo] = await tx
       .update(todosTable)
       .set(body)
       .where(eq(todosTable.id, id))
@@ -133,7 +133,7 @@ app.openapi(deleteTodoRoute, async (c) => {
 
   const result = await db.transaction(async (tx) => {
     const txid = await generateTxId(tx)
-    const [deletedTodo] = await db
+    const [deletedTodo] = await tx
       .delete(todosTable)
       .where(eq(todosTable.id, id))
       .returning()
