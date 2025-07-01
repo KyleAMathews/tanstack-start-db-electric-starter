@@ -4,6 +4,9 @@ import viteTsConfigPaths from "vite-tsconfig-paths"
 import tailwindcss from "@tailwindcss/vite"
 
 const config = defineConfig({
+  server: {
+    host: true,
+  },
   plugins: [
     // this is the plugin that enables path aliases
     viteTsConfigPaths({

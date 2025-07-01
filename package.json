@@ -3,15 +3,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "docker compose up -d && vite dev",
+    "dev": "docker compose up -d && concurrently \"vite dev\" \"npm run caddy\"",
     "start": "node .output/server/index.mjs",
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest run",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "caddy": "caddy run --config Caddyfile"
   },
   "dependencies": {
     "@electric-sql/client": "^1.0.5",
@@ -48,6 +49,7 @@
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "@typescript-eslint/parser": "^8.35.1",
     "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.2.0",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^10.1.5",

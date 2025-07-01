@@ -14,7 +14,7 @@ const todoCollection = createCollection(
       url: new URL(
         `/api/todos`,
         typeof window !== `undefined`
-          ? window.location.origin
+          ? `https://localhost:51722`
           : `http://localhost:5173`
       ).toString(),
       params: {

@@ -1,0 +1,6 @@
+localhost:51722 {
+  reverse_proxy localhost:5173
+  encode {
+    gzip
+  }
+}
