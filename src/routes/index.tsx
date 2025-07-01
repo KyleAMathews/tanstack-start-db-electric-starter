@@ -11,7 +11,12 @@ const todoCollection = createCollection(
   electricCollectionOptions({
     id: "todos",
     shapeOptions: {
-      url: "http://localhost:3000/v1/shape",
+      url: new URL(
+        `/api/todos`,
+        typeof window !== `undefined`
+          ? window.location.origin
+          : `http://localhost:5173`
+      ).toString(),
       params: {
         table: "todos",
       },
