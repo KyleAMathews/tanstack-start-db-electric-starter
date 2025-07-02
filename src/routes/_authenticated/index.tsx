@@ -3,8 +3,8 @@ import { useLiveQuery } from "@tanstack/react-db"
 import { createCollection } from "@tanstack/react-db"
 import { electricCollectionOptions } from "@tanstack/db-collections"
 import { useState } from "react"
-import { selectTodoSchema, type Todo } from "../db/schema"
-import { getClient } from "../api-client"
+import { selectTodoSchema, type Todo } from "@/db/schema"
+import { getClient } from "@/api-client"
 const client = getClient()
 
 const todoCollection = createCollection(
@@ -82,13 +82,13 @@ const todoCollection = createCollection(
   })
 )
 
-export const Route = createFileRoute(`/`)({
+export const Route = createFileRoute(`/_authenticated/`)({
   component: App,
   ssr: false,
-  loader: async () => {
-    await todoCollection.preload()
-    return null
-  },
+  // loader: async () => {
+  //   await todoCollection.preload()
+  //   return null
+  // },
 })
 
 function App() {

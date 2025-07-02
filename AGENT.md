@@ -15,12 +15,15 @@
 - **Electric**: Real-time sync service on port 3000
 - **Services**: Docker Compose setup (Postgres on 54321, Electric on 3000)
 - **Styling**: Tailwind CSS v4
+- **Authentication**: better-auth
+- **API**: Hono OpenAPI w/ Zod for validation and a Hono RPC client for full e2e typesafety.
 
 ## Code Style
 
 - **TypeScript**: Strict mode, ES2022 target, bundler module resolution
 - **Imports**: Use `@/*` path aliases for `src/` directory imports
 - **Components**: React 19 with JSX transform, functional components preferred
-- **DB**: Drizzle ORM with PostgreSQL dialect, schema-first approach
+- **Server DB**: Drizzle ORM with PostgreSQL dialect, schema-first approach
+- **Client DB**: TanStack DB with Electric Sync Collections
 - **Routing**: File-based with TanStack Router, use `Link` component for navigation
 - **Testing**: Vitest with @testing-library/react for component tests

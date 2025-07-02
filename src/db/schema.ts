@@ -7,6 +7,7 @@ import {
 } from "drizzle-orm/pg-core"
 import { createSchemaFactory } from "drizzle-zod"
 import { z } from "@hono/zod-openapi"
+export * from "./auth-schema"
 
 const { createInsertSchema, createSelectSchema, createUpdateSchema } =
   createSchemaFactory({ zodInstance: z })
