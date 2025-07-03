@@ -29,7 +29,7 @@ function Layout() {
         {
           onSuccess: () => {
             console.log(`signed up, navigating`)
-            navigate({ to: "/" })
+            window.location.href = "/"
           },
         }
       )
@@ -46,7 +46,7 @@ function Layout() {
               console.log(`signed in, navigating`)
               const { data: session, error } = await authClient.getSession()
               console.log({ session, error })
-              navigate({ to: "/" })
+              window.location.href = "/"
             },
           }
         )
