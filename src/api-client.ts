@@ -9,7 +9,12 @@ export function getClient() {
   }
   if (!_client) {
     _client = hc<AppType>(
-      typeof window !== `undefined` ? window?.location.origin : ``
+      typeof window !== `undefined` ? window?.location.origin : ``,
+      {
+        init: {
+          credentials: `include`,
+        },
+      }
     )
   }
   return _client

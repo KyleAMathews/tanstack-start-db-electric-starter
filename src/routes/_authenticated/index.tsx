@@ -3,6 +3,7 @@ import { useLiveQuery } from "@tanstack/react-db"
 import { createCollection } from "@tanstack/react-db"
 import { electricCollectionOptions } from "@tanstack/db-collections"
 import { useState } from "react"
+import { authClient } from "@/lib/auth-client"
 import { selectTodoSchema, type Todo } from "@/db/schema"
 import { getClient } from "@/api-client"
 const client = getClient()
@@ -14,11 +15,15 @@ const todoCollection = createCollection(
       url: new URL(
         `/api/todos`,
         typeof window !== `undefined`
-          ? `https://localhost:51722`
+          ? window.location.origin
           : `http://localhost:5173`
       ).toString(),
       params: {
         table: "todos",
+        // Set the user_id as a param as a cache buster for when
+        // you log in and out to test different accounts.
+        user_id: async () =>
+          authClient.getSession().then((session) => session.data?.user.id),
       },
       parser: {
         // Parse timestamp columns into JavaScript Date objects
@@ -33,6 +38,7 @@ const todoCollection = createCollection(
       const { modified: newTodo } = transaction.mutations[0]
       const result = await client.api.todos.$post({
         json: {
+          user_id: newTodo.user_id,
           text: newTodo.text,
           completed: newTodo.completed,
         },
@@ -92,6 +98,7 @@ export const Route = createFileRoute(`/_authenticated/`)({
 })
 
 function App() {
+  const { data: session } = authClient.useSession()
   const [newTodoText, setNewTodoText] = useState("")
 
   const { data: todos } = useLiveQuery((query) =>
@@ -101,6 +108,7 @@ function App() {
   const addTodo = () => {
     if (newTodoText.trim()) {
       todoCollection.insert({
+        user_id: session?.user.id!,
         id: Math.floor(Math.random() * 100000),
         text: newTodoText.trim(),
         completed: false,

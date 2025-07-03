@@ -2,6 +2,15 @@ Welcome to your new TanStack [Start](https://tanstack.com/start/latest)/[DB](htt
 
 # Getting Started
 
+## Prerequisites
+
+This project uses [Caddy](https://caddyserver.com/) for local HTTPS development:
+
+1. **Install Caddy** for your OS — https://caddyserver.com/docs/install
+2. **Run `caddy trust`** so Caddy can install its certificate into your OS. This is necessary for http/2 to Just Work™ without SSL warnings/errors in the browser — https://caddyserver.com/docs/command-line#caddy-trust
+
+## Running the Application
+
 To run this application:
 
 ```bash

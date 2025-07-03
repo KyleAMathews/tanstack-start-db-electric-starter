@@ -7,6 +7,7 @@ import {
   createTodoSchema,
   updateTodoSchema,
 } from "@/db/schema"
+import { eq } from "drizzle-orm"
 
 const routes = [
   createCRUDRoutes({
@@ -17,6 +18,12 @@ const routes = [
       update: updateTodoSchema,
     },
     basePath: "/api/todos",
+    syncFilter: (session) => `user_id = '${session.user.id}'`,
+    access: {
+      create: (_session, _data) => true,
+      update: (session, _id, _data) => eq(todosTable.user_id, session.user.id),
+      delete: (session, _id) => eq(todosTable.user_id, session.user.id),
+    },
   }),
 ] as const
 const app = new OpenAPIHono()

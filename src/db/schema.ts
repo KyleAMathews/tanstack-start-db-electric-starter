@@ -4,10 +4,12 @@ import {
   pgTable,
   timestamp,
   varchar,
+  text,
 } from "drizzle-orm/pg-core"
 import { createSchemaFactory } from "drizzle-zod"
 import { z } from "@hono/zod-openapi"
 export * from "./auth-schema"
+import { users } from "./auth-schema"
 
 const { createInsertSchema, createSelectSchema, createUpdateSchema } =
   createSchemaFactory({ zodInstance: z })
@@ -17,6 +19,9 @@ export const todosTable = pgTable(`todos`, {
   text: varchar({ length: 500 }).notNull(),
   completed: boolean().notNull().default(false),
   created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  user_id: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
 })
 
 export const selectTodoSchema = createSelectSchema(todosTable)

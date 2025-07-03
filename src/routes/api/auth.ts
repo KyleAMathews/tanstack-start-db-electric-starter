@@ -3,6 +3,10 @@ import { OpenAPIHono } from "@hono/zod-openapi"
 import { auth } from "@/lib/auth"
 const routes = new OpenAPIHono()
 
+routes.use(
+  "/api/auth/**" // Or just "*" to apply to all routes
+)
+
 routes.on(["POST", "GET"], "/api/auth/**", (c) => auth.handler(c.req.raw))
 
 const serve = ({ request }: { request: Request }) => {

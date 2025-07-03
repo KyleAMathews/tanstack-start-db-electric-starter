@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "docker compose up -d && concurrently \"vite dev\" \"npm run caddy\"",
+    "dev": "docker compose up -d && vite dev",
     "start": "node .output/server/index.mjs",
     "build": "vite build",
     "serve": "vite preview",
@@ -11,8 +11,7 @@
     "lint:check": "eslint .",
     "lint": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "caddy": "caddy run --config Caddyfile"
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@electric-sql/client": "^1.0.5",
@@ -41,8 +40,8 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
-    "@eslint/js": "^9.30.0",
     "@eslint/compat": "^1.3.1",
+    "@eslint/js": "^9.30.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/pg": "^8.15.4",
