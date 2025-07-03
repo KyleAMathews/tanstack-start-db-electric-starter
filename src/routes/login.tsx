@@ -61,7 +61,7 @@ function Layout() {
         console.log(`set error`)
         setError(JSON.stringify(error, null, 4))
       }
-    } catch (err) {
+    } catch (_) {
       setError("An unexpected error occurred")
     } finally {
       setIsLoading(false)

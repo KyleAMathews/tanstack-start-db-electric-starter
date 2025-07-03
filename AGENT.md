@@ -1,5 +1,20 @@
 # TanStack Start + DB + Electric Starter
 
+This is a TanStack Start project with an OpenAPI REST API running on Start's server functions so it's easily deployable to many hosting platforms.
+
+All reads from the Postgres database are done via the Electric sync engine.
+
+We sync normalized data from tables into TanStack DB collections in the client & then write client-side queries for displaying data in components.
+
+## Initial setup
+Before you started, all necessary package install is done via `pnpm install` and a dev server is started with `pnpm dev`.
+
+## Linting and formatting
+
+Human devs have IDEs that autoformat code on every file save. After you edit files, you must do the equivalent by running `pnpm lint`.
+
+This command will also report linter errors that were not automatically fixable. Use your judgement as to which of the linter violations should be fixed.
+
 ## Build/Test Commands
 
 - `pnpm run dev` - Start development server with Docker services
@@ -10,7 +25,7 @@
 
 ## Architecture
 
-- **Frontend**: TanStack Start (React SSR framework) with file-based routing in `src/routes/`
+- **Frontend**: TanStack Start (SSR framework for React and other frameworks) with file-based routing in `src/routes/`
 - **Database**: PostgreSQL with Drizzle ORM, schema in `src/db/schema.ts`
 - **Electric**: Real-time sync service on port 3000
 - **Services**: Docker Compose setup (Postgres on 54321, Electric on 3000)

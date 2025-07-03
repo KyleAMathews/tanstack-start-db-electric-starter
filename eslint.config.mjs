@@ -5,18 +5,13 @@ import reactPlugin from "eslint-plugin-react"
 import prettierPlugin from "eslint-plugin-prettier"
 import prettierConfig from "eslint-config-prettier"
 import globals from "globals"
+import { includeIgnoreFile } from "@eslint/compat"
+import { fileURLToPath } from "url"
+
+const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url))
 
 export default [
-  js.configs.recommended,
-  {
-    ignores: [
-      `node_modules/**`,
-      `dist/**`,
-      `build/**`,
-      `.output/**`,
-      `src/routeTree.gen.ts`,
-    ],
-  },
+  includeIgnoreFile(gitignorePath, "Imported .gitignore patterns"),
   {
     files: ["src/**/*.{js,jsx,ts,tsx,mjs}"],
     languageOptions: {
@@ -45,6 +40,7 @@ export default [
       prettier: prettierPlugin,
     },
     rules: {
+      ...js.configs.recommended.rules,
       ...tsPlugin.configs.recommended.rules,
       ...reactPlugin.configs.recommended.rules,
       ...prettierConfig.rules,
@@ -52,6 +48,16 @@ export default [
       "react/react-in-jsx-scope": `off`,
       "react/jsx-uses-react": `off`,
       "no-undef": `off`,
+      "@typescript-eslint/no-undef": "off",
+      "@typescript-eslint/no-unused-vars": [
+        `error`,
+        {
+          argsIgnorePattern: `^_`,
+          varsIgnorePattern: `^_`,
+          destructuredArrayIgnorePattern: `^_`,
+          caughtErrorsIgnorePattern: `^_`,
+        },
+      ],
     },
   },
 ]
