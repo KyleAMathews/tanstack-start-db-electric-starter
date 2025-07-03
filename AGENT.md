@@ -42,3 +42,4 @@ This command will also report linter errors that were not automatically fixable.
 - **Client DB**: TanStack DB with Electric Sync Collections
 - **Routing**: File-based with TanStack Router, use `Link` component for navigation
 - **Testing**: Vitest with @testing-library/react for component tests
+- **file names** should always use kebab-case

@@ -15,7 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { ServerRoute as ApiAuthServerRouteImport } from './routes/api/auth'
-import { ServerRoute as ApiTodosSplatServerRouteImport } from './routes/api/todos/$'
+import { ServerRoute as ApiSplatServerRouteImport } from './routes/api/$'
 
 const rootServerRouteImport = createServerRootRoute()
 
@@ -38,9 +38,9 @@ const ApiAuthServerRoute = ApiAuthServerRouteImport.update({
   path: '/api/auth',
   getParentRoute: () => rootServerRouteImport,
 } as any)
-const ApiTodosSplatServerRoute = ApiTodosSplatServerRouteImport.update({
-  id: '/api/todos/$',
-  path: '/api/todos/$',
+const ApiSplatServerRoute = ApiSplatServerRouteImport.update({
+  id: '/api/$',
+  path: '/api/$',
   getParentRoute: () => rootServerRouteImport,
 } as any)
 
@@ -71,29 +71,29 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
 }
 export interface FileServerRoutesByFullPath {
+  '/api/$': typeof ApiSplatServerRoute
   '/api/auth': typeof ApiAuthServerRoute
-  '/api/todos/$': typeof ApiTodosSplatServerRoute
 }
 export interface FileServerRoutesByTo {
+  '/api/$': typeof ApiSplatServerRoute
   '/api/auth': typeof ApiAuthServerRoute
-  '/api/todos/$': typeof ApiTodosSplatServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
+  '/api/$': typeof ApiSplatServerRoute
   '/api/auth': typeof ApiAuthServerRoute
-  '/api/todos/$': typeof ApiTodosSplatServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/auth' | '/api/todos/$'
+  fullPaths: '/api/$' | '/api/auth'
   fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/auth' | '/api/todos/$'
-  id: '__root__' | '/api/auth' | '/api/todos/$'
+  to: '/api/$' | '/api/auth'
+  id: '__root__' | '/api/$' | '/api/auth'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
+  ApiSplatServerRoute: typeof ApiSplatServerRoute
   ApiAuthServerRoute: typeof ApiAuthServerRoute
-  ApiTodosSplatServerRoute: typeof ApiTodosSplatServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -130,11 +130,11 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiAuthServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
-    '/api/todos/$': {
-      id: '/api/todos/$'
-      path: '/api/todos/$'
-      fullPath: '/api/todos/$'
-      preLoaderRoute: typeof ApiTodosSplatServerRouteImport
+    '/api/$': {
+      id: '/api/$'
+      path: '/api/$'
+      fullPath: '/api/$'
+      preLoaderRoute: typeof ApiSplatServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
   }
@@ -160,8 +160,8 @@ export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 const rootServerRouteChildren: RootServerRouteChildren = {
+  ApiSplatServerRoute: ApiSplatServerRoute,
   ApiAuthServerRoute: ApiAuthServerRoute,
-  ApiTodosSplatServerRoute: ApiTodosSplatServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)
