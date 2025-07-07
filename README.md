@@ -35,6 +35,7 @@ npm run test
 ```
 
 ## AI
+
 The starter includes an `AGENT.md`. Depending on which AI coding tool you use, you may need to copy/move it to the right file name e.g. `.cursor/rules`.
 
 ## Styling

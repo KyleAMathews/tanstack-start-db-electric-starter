@@ -7,6 +7,7 @@ All reads from the Postgres database are done via the Electric sync engine.
 We sync normalized data from tables into TanStack DB collections in the client & then write client-side queries for displaying data in components.
 
 ## Initial setup
+
 Before you started, all necessary package install is done via `pnpm install` and a dev server is started with `pnpm dev`.
 
 ## Linting and formatting
