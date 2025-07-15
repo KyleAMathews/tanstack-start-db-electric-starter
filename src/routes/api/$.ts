@@ -6,10 +6,31 @@ import {
   selectTodoSchema,
   createTodoSchema,
   updateTodoSchema,
+  projectsTable,
+  selectProjectSchema,
+  createProjectSchema,
+  updateProjectSchema,
 } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
 const routes = [
+  createCRUDRoutes({
+    table: projectsTable,
+    schema: {
+      select: selectProjectSchema,
+      create: createProjectSchema,
+      update: updateProjectSchema,
+    },
+    basePath: "/api/projects",
+    syncFilter: (session) =>
+      `owner_id = '${session.user.id}' OR '${session.user.id}' = ANY(shared_user_ids)`,
+    access: {
+      create: (session, data) => data.owner_id === session.user.id,
+      update: (session, _id, _data) =>
+        eq(projectsTable.owner_id, session.user.id),
+      delete: (session, _id) => eq(projectsTable.owner_id, session.user.id),
+    },
+  }),
   createCRUDRoutes({
     table: todosTable,
     schema: {

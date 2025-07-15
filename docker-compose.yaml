@@ -10,8 +10,9 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - 54321:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     tmpfs:
-      - /var/lib/postgresql/data
       - /tmp
     command:
       - -c
@@ -30,3 +31,6 @@ services:
       - "3000:3000"
     depends_on:
       - postgres
+
+volumes:
+  postgres_data:
