@@ -2,7 +2,11 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useLiveQuery, eq } from "@tanstack/react-db"
 import { useState } from "react"
 import { authClient } from "@/lib/auth-client"
-import { todoCollection, projectCollection } from "@/lib/collections"
+import {
+  todoCollection,
+  projectCollection,
+  usersCollection,
+} from "@/lib/collections"
 import { type Todo } from "@/db/schema"
 
 export const Route = createFileRoute("/_authenticated/project/$projectId")({
@@ -31,8 +35,33 @@ function ProjectPage() {
     [projectId]
   )
 
-  const { data: projects } = useLiveQuery((q) => q.from({ projectCollection }))
-  const project = projects?.find((p) => p.id === parseInt(projectId))
+  const { data: users } = useLiveQuery((q) =>
+    q.from({ users: usersCollection })
+  )
+  const { data: usersInProjects } = useLiveQuery(
+    (q) =>
+      q
+        .from({ projects: projectCollection })
+        .where(({ projects }) => eq(projects.id, parseInt(projectId, 10)))
+        .fn.select(({ projects }) => ({
+          users: projects.shared_user_ids.concat(projects.owner_id),
+          owner: projects.owner_id,
+        })),
+    [projectId]
+  )
+  const usersInProject = usersInProjects?.[0]
+  console.log({ usersInProject, users })
+
+  const { data: projects } = useLiveQuery(
+    (q) =>
+      q
+        .from({ projectCollection })
+        .where(({ projectCollection }) =>
+          eq(projectCollection.id, parseInt(projectId, 10))
+        ),
+    [projectId]
+  )
+  const project = projects[0]
 
   const addTodo = () => {
     if (newTodoText.trim() && session) {
@@ -42,6 +71,7 @@ function ProjectPage() {
         text: newTodoText.trim(),
         completed: false,
         project_id: parseInt(projectId),
+        user_ids: [],
         created_at: new Date(),
       })
       setNewTodoText("")
@@ -127,8 +157,8 @@ function ProjectPage() {
               />
               <span
                 className={`flex-1 ${todo.completed
-                  ? "line-through text-gray-500"
-                  : "text-gray-800"
+                    ? "line-through text-gray-500"
+                    : "text-gray-800"
                   }`}
               >
                 {todo.text}
@@ -148,6 +178,60 @@ function ProjectPage() {
             <p className="text-gray-500">No todos yet. Add one above!</p>
           </div>
         )}
+
+        <hr className="my-8 border-gray-200" />
+
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
+            Project Members
+          </h3>
+          <div className="space-y-2">
+            {(session?.user.id === project.owner_id
+              ? users
+              : users?.filter((user) => usersInProject?.users.includes(user.id))
+            )?.map((user) => {
+              const isInProject = usersInProject?.users.includes(user.id)
+              const isOwner = user.id === usersInProject?.owner
+              const canEditMembership = session?.user.id === project.owner_id
+              return (
+                <div
+                  key={user.id}
+                  className="flex items-center gap-3 p-2 bg-gray-50 rounded"
+                >
+                  {canEditMembership && (
+                    <input
+                      type="checkbox"
+                      checked={isInProject}
+                      onChange={() => {
+                        console.log(`onChange`, { isInProject, isOwner })
+                        if (isInProject && !isOwner) {
+                          projectCollection.update(project.id, (draft) => {
+                            draft.shared_user_ids =
+                              draft.shared_user_ids.filter(
+                                (id) => id !== user.id
+                              )
+                          })
+                        } else if (!isInProject) {
+                          projectCollection.update(project.id, (draft) => {
+                            draft.shared_user_ids.push(user.id)
+                          })
+                        }
+                      }}
+                      disabled={isOwner}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 disabled:opacity-50"
+                    />
+                  )}
+                  <span className="flex-1 text-gray-800">{user.name}</span>
+                  {isOwner && (
+                    <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                      Owner
+                    </span>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
       </div>
     </div>
   )

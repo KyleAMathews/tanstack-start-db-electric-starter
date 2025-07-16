@@ -70,7 +70,7 @@ interface CRUDConfig {
   /** Database table to perform operations on */
   table: any
   /** Zod schemas for validation */
-  schema: {
+  schema?: {
     select: z.ZodSchema
     create: z.ZodSchema
     update: z.ZodSchema
@@ -195,18 +195,18 @@ export function createCRUDRoutes(config: CRUDConfig) {
         path: basePath,
         method: "post",
         request: {
-          body: jsonContentRequired(schema.create, "The item to create"),
+          body: jsonContentRequired(schema?.create, "The item to create"),
         },
         responses: {
           [HttpStatusCodes.OK]: jsonContent(
             z.object({
               txid: z.string(),
-              item: schema.select,
+              item: schema?.select,
             }),
             "The created item"
           ),
           [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
-            createErrorSchema(schema.create),
+            createErrorSchema(schema?.create ?? z.string()),
             "The validation error(s)"
           ),
         },
@@ -242,13 +242,13 @@ export function createCRUDRoutes(config: CRUDConfig) {
         method: "put",
         request: {
           params: IdParamsSchema,
-          body: jsonContentRequired(schema.update, "The item to update"),
+          body: jsonContentRequired(schema?.update, "The item to update"),
         },
         responses: {
           [HttpStatusCodes.OK]: jsonContent(
             z.object({
               txid: z.string(),
-              item: schema.select,
+              item: schema?.select,
             }),
             "The updated item"
           ),
@@ -257,7 +257,7 @@ export function createCRUDRoutes(config: CRUDConfig) {
             HttpStatusPhrases.NOT_FOUND
           ),
           [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
-            createErrorSchema(schema.update),
+            createErrorSchema(schema?.update ?? z.string()),
             "The validation error(s)"
           ),
         },
@@ -315,7 +315,7 @@ export function createCRUDRoutes(config: CRUDConfig) {
           [HttpStatusCodes.OK]: jsonContent(
             z.object({
               txid: z.string(),
-              item: schema.select,
+              item: schema?.select,
             }),
             "The deleted item"
           ),

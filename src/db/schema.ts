@@ -36,6 +36,7 @@ export const todosTable = pgTable(`todos`, {
   project_id: integer("project_id")
     .notNull()
     .references(() => projectsTable.id, { onDelete: "cascade" }),
+  user_ids: text("user_ids").array().notNull().default([]),
 })
 
 export const selectProjectSchema = createSelectSchema(projectsTable)
@@ -58,3 +59,5 @@ export type Project = z.infer<typeof selectProjectSchema>
 export type UpdateProject = z.infer<typeof updateProjectSchema>
 export type Todo = z.infer<typeof selectTodoSchema>
 export type UpdateTodo = z.infer<typeof updateTodoSchema>
+
+export const selectUsersSchema = createSelectSchema(users)
