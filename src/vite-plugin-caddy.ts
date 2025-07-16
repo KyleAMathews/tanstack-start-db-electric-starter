@@ -72,8 +72,8 @@ ${networkIP} {
     }
 
     caddyProcess = spawn("caddy", ["run", "--config", configPath], {
-      stdio: "inherit",
-      shell: true,
+      // stdio: "inherit",
+      // shell: true,
     })
 
     caddyProcess.on("error", (error) => {
@@ -95,8 +95,11 @@ ${networkIP} {
         setTimeout(() => {
           if (caddyProcess && !caddyProcess.killed) {
             caddyProcess.kill("SIGKILL")
+            process.exit()
+          } else {
+            process.exit()
           }
-        }, 5000)
+        }, 1000)
       }
     }
 

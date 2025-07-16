@@ -15,7 +15,8 @@ To run this application:
 
 ```bash
 npm install
-npm run start
+npm run dev
+npm run migrate
 ```
 
 # Building For Production
@@ -164,7 +165,7 @@ This starter uses ElectricSQL for a fully local-first experience with real-time 
 
 ```tsx
 import { createCollection } from "@tanstack/react-db"
-import { electricCollectionOptions } from "@tanstack/db-collections"
+import { electricCollectionOptions } from "@tanstack/electric-db-collection"
 
 export const todoCollection = createCollection(
   electricCollectionOptions<Todo>({
