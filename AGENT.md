@@ -1,8 +1,8 @@
 # TanStack Start + DB + Electric Starter
 
-This is a TanStack Start project with an OpenAPI REST API running on Start's server functions so it's easily deployable to many hosting platforms.
+This is a TanStack Start project with tRPC v10 for mutations and Electric sync for reads, running on Start's server functions so it's easily deployable to many hosting platforms.
 
-All reads from the Postgres database are done via the Electric sync engine.
+All reads from the Postgres database are done via the Electric sync engine. All mutations (create, update, delete) are done via tRPC with full end-to-end type safety.
 
 We sync normalized data from tables into TanStack DB collections in the client & then write client-side queries for displaying data in components.
 
@@ -32,7 +32,13 @@ This command will also report linter errors that were not automatically fixable.
 - **Services**: Docker Compose setup (Postgres on 54321, Electric on 3000)
 - **Styling**: Tailwind CSS v4
 - **Authentication**: better-auth
-- **API**: Hono OpenAPI w/ Zod for validation and a Hono RPC client for full e2e typesafety.
+- **API**: tRPC v10 for mutations with full e2e type safety, Electric shapes for real-time reads
+
+## API Routing
+
+- **tRPC** (`/api/trpc/*`) - All mutations (create, update, delete) with full type safety
+- **better-auth** (`/api/auth/*`) - Authentication endpoints
+- **Electric shapes** (`/api/projects`, `/api/todos`, `/api/users`) - Real-time sync endpoints for reads
 
 ## Code Style
 
@@ -44,3 +50,10 @@ This command will also report linter errors that were not automatically fixable.
 - **Routing**: File-based with TanStack Router, use `Link` component for navigation
 - **Testing**: Vitest with @testing-library/react for component tests
 - **file names** should always use kebab-case
+
+## tRPC Integration
+
+- tRPC routers are defined in `src/lib/trpc/` directory
+- Client is configured in `src/lib/trpc-client.ts`
+- Collection hooks use tRPC client for mutations in `src/lib/collections.ts`
+- Transaction IDs are generated using `pg_current_xact_id()::xid::text` for Electric sync compatibility

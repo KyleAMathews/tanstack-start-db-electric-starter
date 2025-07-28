@@ -14,9 +14,9 @@ This project uses [Caddy](https://caddyserver.com/) for local HTTPS development:
 To run this application:
 
 ```bash
-npm install
-npm run dev
-npm run migrate
+pnpm install
+pnpm run dev
+pnpm run migrate
 ```
 
 # Building For Production
@@ -24,7 +24,7 @@ npm run migrate
 To build this application for production:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ## Testing
@@ -32,7 +32,7 @@ npm run build
 This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 ## AI
@@ -179,9 +179,14 @@ export const todoCollection = createCollection(
       },
     },
     getKey: (item) => item.id,
-    onInsert: ({ transaction }) => {
-      const response = await api.todos.create(transaction.mutations[0].modified)
-      return { txid: response.txid }
+    onInsert: async ({ transaction }) => {
+      const { modified: newTodo } = transaction.mutations[0]
+      const result = await trpc.todos.create.mutate({
+        text: newTodo.text,
+        completed: newTodo.completed,
+        // ... other fields
+      })
+      return { txid: result.txid }
     },
     // You can also implement onUpdate, onDelete as needed
   })
@@ -240,6 +245,51 @@ const Todos = () => {
 ```
 
 This pattern provides blazing fast, cross-collection live queries and local optimistic mutations with automatically managed optimistic state, all synced in real-time with ElectricSQL.
+
+#### tRPC Integration for Mutations
+
+This starter uses [tRPC v10](https://trpc.io/) for type-safe mutations while Electric handles real-time reads:
+
+```tsx
+// src/lib/trpc-client.ts
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
+import type { AppRouter } from '@/routes/api/trpc/$'
+
+export const trpc = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: '/api/trpc',
+      async headers() {
+        return {
+          cookie: typeof document !== 'undefined' ? document.cookie : '',
+        }
+      },
+    }),
+  ],
+})
+```
+
+The collection hooks use tRPC for all mutations, providing full end-to-end type safety:
+
+```tsx
+// In your collection configuration
+onUpdate: async ({ transaction }) => {
+  const { modified: updatedTodo } = transaction.mutations[0]
+  const result = await trpc.todos.update.mutate({
+    id: updatedTodo.id,
+    data: {
+      text: updatedTodo.text,
+      completed: updatedTodo.completed,
+    },
+  })
+  return { txid: result.txid }
+},
+```
+
+**API Routes:**
+- `/api/trpc/*` - tRPC mutations with full type safety
+- `/api/auth/*` - Authentication via better-auth
+- `/api/projects`, `/api/todos`, `/api/users` - Electric sync shapes for reads
 
 You can learn more about TanStack DB in the [TanStack DB documentation](https://tanstack.com/db/latest/docs/overview).
 
