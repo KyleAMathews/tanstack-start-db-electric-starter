@@ -57,8 +57,8 @@ function AuthenticatedLayout() {
 
   useEffect(() => {
     if (session && projects && !isLoading) {
-      const hasDefault = projects.some((p) => p.name === "Default")
-      if (!hasDefault) {
+      const hasProject = projects.length > 0
+      if (!hasProject) {
         projectCollection.insert({
           id: Math.floor(Math.random() * 100000),
           name: "Default",

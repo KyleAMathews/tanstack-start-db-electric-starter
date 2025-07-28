@@ -7,7 +7,7 @@ import {
   text,
 } from "drizzle-orm/pg-core"
 import { createSchemaFactory } from "drizzle-zod"
-import { z } from "@hono/zod-openapi"
+import { z } from "zod"
 export * from "./auth-schema"
 import { users } from "./auth-schema"
 
@@ -40,19 +40,15 @@ export const todosTable = pgTable(`todos`, {
 })
 
 export const selectProjectSchema = createSelectSchema(projectsTable)
-export const createProjectSchema = createInsertSchema(projectsTable)
-  .omit({
-    created_at: true,
-  })
-  .openapi(`CreateProject`)
+export const createProjectSchema = createInsertSchema(projectsTable).omit({
+  created_at: true,
+})
 export const updateProjectSchema = createUpdateSchema(projectsTable)
 
 export const selectTodoSchema = createSelectSchema(todosTable)
-export const createTodoSchema = createInsertSchema(todosTable)
-  .omit({
-    created_at: true,
-  })
-  .openapi(`CreateTodo`)
+export const createTodoSchema = createInsertSchema(todosTable).omit({
+  created_at: true,
+})
 export const updateTodoSchema = createUpdateSchema(todosTable)
 
 export type Project = z.infer<typeof selectProjectSchema>

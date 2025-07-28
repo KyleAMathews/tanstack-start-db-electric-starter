@@ -6,8 +6,7 @@ import {
   selectProjectSchema,
   selectUsersSchema,
 } from "@/db/schema"
-import { getClient } from "@/api-client"
-const client = getClient()
+import { trpc } from "@/lib/trpc-client"
 
 export const usersCollection = createCollection(
   electricCollectionOptions({
@@ -63,56 +62,35 @@ export const projectCollection = createCollection(
     getKey: (item) => item.id,
     onInsert: async ({ transaction }) => {
       const { modified: newProject } = transaction.mutations[0]
-      const result = await client.api.projects.$post({
-        json: {
-          name: newProject.name,
-          description: newProject.description,
-          owner_id: newProject.owner_id,
-          shared_user_ids: newProject.shared_user_ids,
-        },
+      const result = await trpc.projects.create.mutate({
+        name: newProject.name,
+        description: newProject.description,
+        owner_id: newProject.owner_id,
+        shared_user_ids: newProject.shared_user_ids,
       })
 
-      if (result.ok) {
-        const data = await result.json()
-        return { txid: data.txid }
-      } else {
-        const errorData = await result.json()
-        throw new Error(JSON.stringify(errorData))
-      }
+      return { txid: result.txid }
     },
     onUpdate: async ({ transaction }) => {
       const { modified: updatedProject } = transaction.mutations[0]
-      const result = await client.api.projects[":id"].$put({
-        param: {
-          id: updatedProject.id,
-        },
-        json: {
+      const result = await trpc.projects.update.mutate({
+        id: updatedProject.id,
+        data: {
           name: updatedProject.name,
           description: updatedProject.description,
           shared_user_ids: updatedProject.shared_user_ids,
         },
       })
-      if (result.ok) {
-        const data = await result.json()
-        return { txid: data.txid }
-      } else {
-        const errorData = await result.json()
-        throw new Error(JSON.stringify(errorData))
-      }
+
+      return { txid: result.txid }
     },
     onDelete: async ({ transaction }) => {
       const { original: deletedProject } = transaction.mutations[0]
-      const result = await client.api.projects[":id"].$delete({
-        param: { id: deletedProject.id },
+      const result = await trpc.projects.delete.mutate({
+        id: deletedProject.id,
       })
 
-      if (result.ok) {
-        const data = await result.json()
-        return { txid: data.txid }
-      } else {
-        const errorData = await result.json()
-        throw new Error(JSON.stringify(errorData))
-      }
+      return { txid: result.txid }
     },
   })
 )
@@ -131,8 +109,8 @@ export const todoCollection = createCollection(
         table: "todos",
         // Set the user_id as a param as a cache buster for when
         // you log in and out to test different accounts.
-        user_id: async () =>
-          authClient.getSession().then((session) => session.data?.user.id)!,
+        user_id: async (): Promise<string> =>
+          authClient.getSession().then((session) => session.data!.user.id)!,
       },
       parser: {
         // Parse timestamp columns into JavaScript Date objects
@@ -145,56 +123,35 @@ export const todoCollection = createCollection(
     getKey: (item) => item.id,
     onInsert: async ({ transaction }) => {
       const { modified: newTodo } = transaction.mutations[0]
-      const result = await client.api.todos.$post({
-        json: {
-          user_id: newTodo.user_id,
-          text: newTodo.text,
-          completed: newTodo.completed,
-          project_id: newTodo.project_id,
-        },
+      const result = await trpc.todos.create.mutate({
+        user_id: newTodo.user_id,
+        text: newTodo.text,
+        completed: newTodo.completed,
+        project_id: newTodo.project_id,
+        user_ids: newTodo.user_ids,
       })
 
-      if (result.ok) {
-        const data = await result.json()
-        return { txid: data.txid }
-      } else {
-        const errorData = await result.json()
-        throw new Error(JSON.stringify(errorData))
-      }
+      return { txid: result.txid }
     },
     onUpdate: async ({ transaction }) => {
       const { modified: updatedTodo } = transaction.mutations[0]
-      const result = await client.api.todos[":id"].$put({
-        param: {
-          id: updatedTodo.id,
-        },
-        json: {
+      const result = await trpc.todos.update.mutate({
+        id: updatedTodo.id,
+        data: {
           text: updatedTodo.text,
           completed: updatedTodo.completed,
         },
       })
-      if (result.ok) {
-        const data = await result.json()
-        console.log(data, typeof data.txid)
-        return { txid: data.txid }
-      } else {
-        const errorData = await result.json()
-        throw new Error(JSON.stringify(errorData))
-      }
+
+      return { txid: result.txid }
     },
     onDelete: async ({ transaction }) => {
       const { original: deletedTodo } = transaction.mutations[0]
-      const result = await client.api.todos[":id"].$delete({
-        param: { id: deletedTodo.id },
+      const result = await trpc.todos.delete.mutate({
+        id: deletedTodo.id,
       })
 
-      if (result.ok) {
-        const data = await result.json()
-        return { txid: data.txid }
-      } else {
-        const errorData = await result.json()
-        throw new Error(JSON.stringify(errorData))
-      }
+      return { txid: result.txid }
     },
   })
 )
