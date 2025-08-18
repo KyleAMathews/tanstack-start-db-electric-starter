@@ -1,3 +1,9 @@
+# ⚠️ DEPRECATED - This repository has been moved!
+
+It now lives in the Electric monorepo at https://github.com/electric-sql/electric/tree/main/examples/tanstack-db-web-starter
+
+---
+
 Welcome to your new TanStack [Start](https://tanstack.com/start/latest)/[DB](https://tanstack.com/db/latest) + [Electric](https://electric-sql.com/) app!
 
 # Getting Started
